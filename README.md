@@ -97,8 +97,14 @@ NPM_REGISTRY=https://mirrors.huaweicloud.com/repository/npm/ docker-compose buil
 
 访问地址：
 
-- 前端：`http://<你的服务器IP>/`
-- 后端健康检查：`http://<你的服务器IP>/api/health`
+- 前端：`http://<你的服务器IP>:8080/`
+- 后端健康检查：`http://<你的服务器IP>:8080/api/health`
+
+默认把前端发布到宿主机 `8080` 端口，避免和服务器上已有的 Nginx、Apache 或其他服务抢占 `80` 端口。如果确认服务器 `80` 端口空闲，也可以这样启动：
+
+```bash
+FRONTEND_HOST_PORT=80 docker compose up -d --build
+```
 
 ### 关闭服务
 
