@@ -48,10 +48,13 @@ sudo mkdir -p /etc/docker
 sudo tee /etc/docker/daemon.json >/dev/null <<'EOF'
 {
 	"registry-mirrors": [
+		"https://docker.mirrors.ustc.edu.cn",
+		"https://docker.nju.edu.cn",
 		"https://docker.1ms.run",
 		"https://dockerproxy.net",
-		"https://proxy.vvvv.ee",
-		"https://dockerproxy.link"
+		"https://dockerproxy.com",
+		"https://dockerproxy.link",
+		"https://proxy.vvvv.ee"
 	]
 }
 EOF
@@ -60,7 +63,7 @@ sudo systemctl restart docker
 docker info | grep -A10 'Registry Mirrors'
 ```
 
-说明：这几个源都是第三方 Docker Hub 代理/加速入口，优先目标是提升中国网络环境下的可用性。若其中某个源长期较慢，可再按实际情况收缩镜像源列表。
+说明：这里把学校镜像源放在前面，是因为它们通常更稳定、内容更干净；但是否更快仍取决于你的云主机出口线路。后面的公共代理源更偏向补充可用性。若其中某个源长期较慢，可再按实际情况收缩镜像源列表。
 
 ### 启动方式
 
