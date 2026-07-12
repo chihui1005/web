@@ -102,6 +102,10 @@ docker compose up -d --build
 
 如果这里仍然报 `docker-compose: command not found`，说明服务器上的仓库代码还不是最新版本；先执行一次 `git pull`，再重新运行脚本。
 
+如果习惯用了 `sudo bash ./scripts/deploy_with_backend_wheels.sh`，脚本现在也会自动切回原始登录用户执行，避免 `root` 环境看不到当前用户安装的 `docker compose` 插件，也避免把仓库文件写成 `root` 权限。
+
+现在脚本在启动前会自动清理当前项目的旧容器和已知的历史遗留容器，所以正常情况下不需要每次手工执行 `docker compose down` 或 `docker rm`。
+
 它会自动执行以下步骤：
 
 ```bash
