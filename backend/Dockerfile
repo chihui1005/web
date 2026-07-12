@@ -1,8 +1,8 @@
 FROM python:3.12-slim
 
-ARG PIP_INDEX_URL=https://mirrors.aliyun.com/pypi/simple/
-ARG PIP_EXTRA_INDEX_URL=https://pypi.org/simple
-ARG PIP_TRUSTED_HOST=mirrors.aliyun.com
+ARG PIP_INDEX_URL=https://mirrors.cloud.tencent.com/pypi/simple
+ARG PIP_EXTRA_INDEX_URL=https://mirrors.aliyun.com/pypi/simple/
+ARG PIP_TRUSTED_HOST=mirrors.cloud.tencent.com mirrors.aliyun.com
 ARG PIP_DEFAULT_TIMEOUT=60
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -16,7 +16,8 @@ RUN pip install --no-cache-dir -r requirements.txt \
     --default-timeout ${PIP_DEFAULT_TIMEOUT} \
     -i ${PIP_INDEX_URL} \
     --extra-index-url ${PIP_EXTRA_INDEX_URL} \
-    --trusted-host ${PIP_TRUSTED_HOST}
+    --trusted-host mirrors.cloud.tencent.com \
+    --trusted-host mirrors.aliyun.com
 
 COPY backend/app ./app
 
