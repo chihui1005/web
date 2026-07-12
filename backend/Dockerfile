@@ -10,12 +10,17 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 WORKDIR /app
 
 COPY backend/requirements.txt ./requirements.txt
+COPY backend/wheels ./wheels
 
-RUN pip install --no-cache-dir -r requirements.txt \
-    --default-timeout ${PIP_DEFAULT_TIMEOUT} \
-    --retries ${PIP_RETRIES} \
-    -i ${PIP_INDEX_URL} \
-    --trusted-host mirrors.cloud.tencent.com
+RUN if find /app/wheels -type f \( -name '*.whl' -o -name '*.tar.gz' -o -name '*.zip' \) | grep -q .; then \
+        pip install --no-cache-dir --no-index --find-links=/app/wheels -r requirements.txt; \
+    else \
+        pip install --no-cache-dir -r requirements.txt \
+            --default-timeout ${PIP_DEFAULT_TIMEOUT} \
+            --retries ${PIP_RETRIES} \
+            -i ${PIP_INDEX_URL} \
+            --trusted-host mirrors.cloud.tencent.com; \
+    fi
 
 COPY backend/app ./app
 
