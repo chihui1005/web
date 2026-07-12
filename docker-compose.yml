@@ -8,7 +8,6 @@ services:
         PIP_INDEX_URL: ${PIP_INDEX_URL:-https://mirrors.cloud.tencent.com/pypi/simple}
         PIP_DEFAULT_TIMEOUT: ${PIP_DEFAULT_TIMEOUT:-120}
         PIP_RETRIES: ${PIP_RETRIES:-10}
-    container_name: pikachu-shop-backend
     environment:
       PIKACHU_SHOP_SECRET: ${PIKACHU_SHOP_SECRET:-change-me-in-production}
     volumes:
@@ -28,7 +27,6 @@ services:
         NPM_FETCH_RETRY_MAXTIMEOUT: ${NPM_FETCH_RETRY_MAXTIMEOUT:-120000}
         NPM_FETCH_TIMEOUT: ${NPM_FETCH_TIMEOUT:-120000}
         VITE_API_BASE_URL: /api
-    container_name: pikachu-shop-frontend
     depends_on:
       - backend
     ports:
