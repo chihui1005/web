@@ -1,4 +1,5 @@
 ARG FRONTEND_BUILD_IMAGE=node:22-alpine
+ARG FRONTEND_RUNTIME_IMAGE=nginx:1.26-alpine
 FROM ${FRONTEND_BUILD_IMAGE} AS build
 
 ARG NPM_REGISTRY=https://mirrors.cloud.tencent.com/npm/
@@ -26,7 +27,6 @@ RUN npm config set registry ${NPM_REGISTRY} \
 		--no-fund \
 	&& npm run build
 
-ARG FRONTEND_RUNTIME_IMAGE=nginx:1.26-alpine
 FROM ${FRONTEND_RUNTIME_IMAGE}
 
 COPY frontend/nginx.conf /etc/nginx/conf.d/default.conf
