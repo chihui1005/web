@@ -10,8 +10,18 @@ ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 PIP_INDEX_URL="${PIP_INDEX_URL:-https://mirrors.cloud.tencent.com/pypi/simple}"
 PIP_TRUSTED_HOST="${PIP_TRUSTED_HOST:-mirrors.cloud.tencent.com}"
 
+if ! command -v docker >/dev/null 2>&1; then
+  echo "docker command not found. If you are using WSL with Docker Desktop, enable WSL integration for this distro first." >&2
+  exit 1
+fi
+
+if ! docker --version >/dev/null 2>&1; then
+  echo "docker CLI is installed but not usable in the current environment. Fix Docker Desktop / WSL integration or the local Docker installation, then rerun this script." >&2
+  exit 1
+fi
+
 if ! docker compose version >/dev/null 2>&1; then
-  echo "docker compose v2 is required. Install the Compose v2 plugin, then rerun this script." >&2
+  echo "docker compose v2 is required. Install the Compose v2 plugin or enable Docker Desktop WSL integration, then rerun this script." >&2
   exit 1
 fi
 
