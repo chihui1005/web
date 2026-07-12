@@ -48,13 +48,12 @@ sudo mkdir -p /etc/docker
 sudo tee /etc/docker/daemon.json >/dev/null <<'EOF'
 {
 	"registry-mirrors": [
-		"https://docker.mirrors.ustc.edu.cn",
-		"https://docker.nju.edu.cn",
 		"https://docker.1ms.run",
 		"https://dockerproxy.net",
 		"https://dockerproxy.com",
 		"https://dockerproxy.link",
-		"https://proxy.vvvv.ee"
+		"https://proxy.vvvv.ee",
+		"https://docker.nju.edu.cn"
 	]
 }
 EOF
@@ -63,7 +62,7 @@ sudo systemctl restart docker
 docker info | grep -A10 'Registry Mirrors'
 ```
 
-说明：这里把学校镜像源放在前面，是因为它们通常更稳定、内容更干净；但是否更快仍取决于你的云主机出口线路。后面的公共代理源更偏向补充可用性。若其中某个源长期较慢，可再按实际情况收缩镜像源列表。
+说明：这个顺序已经按当前主机的实测结果调整过。`docker.mirrors.ustc.edu.cn` 已因 DNS 无法解析移除；`docker.1ms.run` 对 `/v2/` 返回了更符合 Registry 预期的 `401`，因此放在首位；`docker.nju.edu.cn` 当前可连通但返回 `403`，先保留在后面作为兜底。若其中某个源长期较慢，可继续按实际情况收缩镜像源列表。
 
 ### 启动方式
 

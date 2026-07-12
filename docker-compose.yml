@@ -21,7 +21,7 @@ services:
       dockerfile: frontend/Dockerfile
       args:
         FRONTEND_BUILD_IMAGE: ${FRONTEND_BUILD_IMAGE:-node:20-alpine}
-        FRONTEND_RUNTIME_IMAGE: ${FRONTEND_RUNTIME_IMAGE:-nginx:1.27-alpine}
+        FRONTEND_RUNTIME_IMAGE: ${FRONTEND_RUNTIME_IMAGE:-nginx:1.26-alpine}
         NPM_REGISTRY: ${NPM_REGISTRY:-https://registry.npmmirror.com}
         VITE_API_BASE_URL: /api
     container_name: pikachu-shop-frontend

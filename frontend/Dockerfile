@@ -15,7 +15,7 @@ RUN npm config set registry ${NPM_REGISTRY} \
 	&& npm ci \
 	&& npm run build
 
-ARG FRONTEND_RUNTIME_IMAGE=nginx:1.27-alpine
+ARG FRONTEND_RUNTIME_IMAGE=nginx:1.26-alpine
 FROM ${FRONTEND_RUNTIME_IMAGE}
 
 COPY frontend/nginx.conf /etc/nginx/conf.d/default.conf
