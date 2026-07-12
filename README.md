@@ -35,6 +35,28 @@ uvicorn app.main:app --reload
 
 如果服务器拉取 Docker 基础镜像较慢，建议先给 Docker daemon 配置镜像加速，再执行下面的构建命令。
 
+如果服务器上还没有 `docker compose` 命令，建议直接安装 Docker Compose v2 插件；不要求先卸载旧的 `docker-compose` v1，只要后续统一使用 `docker compose` 即可：
+
+```bash
+sudo apt-get update
+sudo apt-get install -y ca-certificates curl gnupg
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo \"$VERSION_CODENAME\") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+docker compose version
+```
+
+如果当前用户还没有 Docker 权限，再执行：
+
+```bash
+sudo usermod -aG docker "$USER"
+newgrp docker
+docker info
+```
+
 仓库内已经提供配置脚本：
 
 ```bash
@@ -83,16 +105,16 @@ docker compose up -d --build
 ```bash
 mkdir -p backend/wheels
 python3 -m pip download -d backend/wheels -r backend/requirements.txt -i https://mirrors.cloud.tencent.com/pypi/simple --trusted-host mirrors.cloud.tencent.com
-docker-compose build --no-cache && docker-compose up -d
+docker compose build --no-cache && docker compose up -d
 ```
 
 前端 Docker 构建默认使用腾讯云 npm 镜像：`https://mirrors.cloud.tencent.com/npm/`。
 如果该源在当前主机上较慢，可以临时覆盖，例如：
 
 ```bash
-NPM_REGISTRY=https://registry.npmmirror.com docker-compose build frontend --no-cache
-NPM_REGISTRY=https://npm.aliyun.com docker-compose build frontend --no-cache
-NPM_REGISTRY=https://mirrors.huaweicloud.com/repository/npm/ docker-compose build frontend --no-cache
+NPM_REGISTRY=https://registry.npmmirror.com docker compose build --no-cache frontend
+NPM_REGISTRY=https://npm.aliyun.com docker compose build --no-cache frontend
+NPM_REGISTRY=https://mirrors.huaweicloud.com/repository/npm/ docker compose build --no-cache frontend
 ```
 
 访问地址：

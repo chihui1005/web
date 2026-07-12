@@ -16,4 +16,4 @@ python3 -m pip download \
   -i "$PIP_INDEX_URL" \
   --trusted-host "$PIP_TRUSTED_HOST"
 
-docker-compose build --no-cache && docker-compose up -d
+docker compose build --no-cache && docker compose up -d
