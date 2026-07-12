@@ -1,4 +1,4 @@
-ARG FRONTEND_BUILD_IMAGE=node:20-alpine
+ARG FRONTEND_BUILD_IMAGE=node:22-alpine
 FROM ${FRONTEND_BUILD_IMAGE} AS build
 
 ARG NPM_REGISTRY=https://mirrors.cloud.tencent.com/npm/

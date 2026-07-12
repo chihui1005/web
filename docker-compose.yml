@@ -20,7 +20,7 @@ services:
       context: .
       dockerfile: frontend/Dockerfile
       args:
-        FRONTEND_BUILD_IMAGE: ${FRONTEND_BUILD_IMAGE:-node:20-alpine}
+        FRONTEND_BUILD_IMAGE: ${FRONTEND_BUILD_IMAGE:-node:22-alpine}
         FRONTEND_RUNTIME_IMAGE: ${FRONTEND_RUNTIME_IMAGE:-nginx:1.26-alpine}
         NPM_REGISTRY: ${NPM_REGISTRY:-https://mirrors.cloud.tencent.com/npm/}
         NPM_FETCH_RETRIES: ${NPM_FETCH_RETRIES:-10}
