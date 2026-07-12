@@ -100,6 +100,8 @@ docker compose up -d --build
 ./scripts/deploy_with_backend_wheels.sh
 ```
 
+如果这里仍然报 `docker-compose: command not found`，说明服务器上的仓库代码还不是最新版本；先执行一次 `git pull`，再重新运行脚本。
+
 它会自动执行以下步骤：
 
 ```bash
