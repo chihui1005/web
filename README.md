@@ -86,6 +86,15 @@ python3 -m pip download -d backend/wheels -r backend/requirements.txt -i https:/
 docker-compose build --no-cache && docker-compose up -d
 ```
 
+前端 Docker 构建默认使用腾讯云 npm 镜像：`https://mirrors.cloud.tencent.com/npm/`。
+如果该源在当前主机上较慢，可以临时覆盖，例如：
+
+```bash
+NPM_REGISTRY=https://registry.npmmirror.com docker-compose build frontend --no-cache
+NPM_REGISTRY=https://npm.aliyun.com docker-compose build frontend --no-cache
+NPM_REGISTRY=https://mirrors.huaweicloud.com/repository/npm/ docker-compose build frontend --no-cache
+```
+
 访问地址：
 
 - 前端：`http://<你的服务器IP>/`
