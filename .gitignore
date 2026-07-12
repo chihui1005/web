@@ -2,3 +2,12 @@ node_modules/
 dist/
 .vite/
 npm-debug.log*
+backend/data/
+frontend/dist/
+backend/.venv/
+backend/app/__pycache__/
+backend/*.db
+backend/.env
+frontend/.env
+__pycache__/
+*.pyc
