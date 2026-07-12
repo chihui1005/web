@@ -1,0 +1,15 @@
+.git
+.github
+node_modules
+frontend/node_modules
+frontend/dist
+dist
+.vite
+backend/.venv
+backend/app/__pycache__
+__pycache__
+*.pyc
+backend/data
+frontend/.env
+backend/.env
+npm-debug.log*
