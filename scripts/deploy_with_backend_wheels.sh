@@ -2,11 +2,11 @@
 
 set -euo pipefail
 
-DOCKER_BIN="${DOCKER_BIN:-$(command -v docker || true)}"
-
 if [[ ${EUID} -eq 0 && -n ${SUDO_USER:-} && ${SUDO_USER} != "root" && -z ${PIKACHU_SHOP_REEXEC_AS_USER:-} ]]; then
-  exec sudo -u "$SUDO_USER" -E env DOCKER_BIN="$DOCKER_BIN" PIKACHU_SHOP_REEXEC_AS_USER=1 bash "$0" "$@"
+  exec sudo -u "$SUDO_USER" -E env PIKACHU_SHOP_REEXEC_AS_USER=1 bash "$0" "$@"
 fi
+
+DOCKER_BIN="${DOCKER_BIN:-$(command -v docker || true)}"
 
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 PIP_INDEX_URL="${PIP_INDEX_URL:-https://mirrors.cloud.tencent.com/pypi/simple}"
