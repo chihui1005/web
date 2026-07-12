@@ -33,6 +33,35 @@ uvicorn app.main:app --reload
 
 如果云主机访问 Python 包索引不稳定，推荐先在宿主机预下载后端依赖，再让 Docker 离线安装。
 
+如果服务器拉取 Docker 基础镜像较慢，建议先给 Docker daemon 配置镜像加速，再执行下面的构建命令。
+
+仓库内已经提供配置脚本：
+
+```bash
+./scripts/configure_docker_mirrors.sh
+```
+
+它会写入以下 `registry-mirrors` 配置：
+
+```bash
+sudo mkdir -p /etc/docker
+sudo tee /etc/docker/daemon.json >/dev/null <<'EOF'
+{
+	"registry-mirrors": [
+		"https://docker.1ms.run",
+		"https://dockerproxy.net",
+		"https://proxy.vvvv.ee",
+		"https://dockerproxy.link"
+	]
+}
+EOF
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+docker info | grep -A10 'Registry Mirrors'
+```
+
+说明：这几个源都是第三方 Docker Hub 代理/加速入口，优先目标是提升中国网络环境下的可用性。若其中某个源长期较慢，可再按实际情况收缩镜像源列表。
+
 ### 启动方式
 
 在仓库根目录执行：
