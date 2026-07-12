@@ -102,6 +102,8 @@ docker compose up -d --build
 
 如果这里仍然报 `docker-compose: command not found`，说明服务器上的仓库代码还不是最新版本；先执行一次 `git pull`，再重新运行脚本。
 
+现在脚本在启动前会自动清理当前项目的旧容器和已知的历史遗留容器，所以正常情况下不需要每次手工执行 `docker compose down` 或 `docker rm`。
+
 它会自动执行以下步骤：
 
 ```bash

@@ -11,6 +11,21 @@ if ! docker compose version >/dev/null 2>&1; then
   exit 1
 fi
 
+cleanup_legacy_containers() {
+  local legacy_names=(
+    "pikachu-shop-backend"
+    "pikachu-shop-frontend"
+    "1529a1f2039d_pikachu-shop-backend"
+    "1529a1f2039d_pikachu-shop-frontend"
+  )
+
+  for name in "${legacy_names[@]}"; do
+    if docker ps -a --format '{{.Names}}' | grep -Fxq "$name"; then
+      docker rm -f "$name" >/dev/null
+    fi
+  done
+}
+
 cd "$ROOT_DIR"
 
 mkdir -p backend/wheels
@@ -21,4 +36,6 @@ python3 -m pip download \
   -i "$PIP_INDEX_URL" \
   --trusted-host "$PIP_TRUSTED_HOST"
 
-docker compose build --no-cache && docker compose up -d
+cleanup_legacy_containers
+docker compose down --remove-orphans >/dev/null 2>&1 || true
+docker compose build --no-cache && docker compose up -d --remove-orphans
