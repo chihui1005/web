@@ -31,12 +31,28 @@ uvicorn app.main:app --reload
 
 这套项目已经补齐 Docker 配置，适合在本地和云主机上保持一致环境。
 
+如果云主机访问 Python 包索引不稳定，推荐先在宿主机预下载后端依赖，再让 Docker 离线安装。
+
 ### 启动方式
 
 在仓库根目录执行：
 
 ```bash
 docker compose up -d --build
+```
+
+在中国网络环境下，更推荐执行下面这条脚本命令：
+
+```bash
+./scripts/deploy_with_backend_wheels.sh
+```
+
+它会自动执行以下步骤：
+
+```bash
+mkdir -p backend/wheels
+python3 -m pip download -d backend/wheels -r backend/requirements.txt -i https://mirrors.cloud.tencent.com/pypi/simple --trusted-host mirrors.cloud.tencent.com
+docker-compose build --no-cache && docker-compose up -d
 ```
 
 访问地址：
@@ -67,7 +83,7 @@ SQLite 数据通过 Docker volume `backend_data` 持久化，不依赖宿主机 
 
 ```bash
 export PIKACHU_SHOP_SECRET='replace-with-a-long-random-secret'
-docker compose up -d --build
+./scripts/deploy_with_backend_wheels.sh
 ```
 
 ## 默认测试账号

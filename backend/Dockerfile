@@ -1,4 +1,5 @@
-FROM python:3.12-slim
+ARG BACKEND_BASE_IMAGE=python:3.12-slim
+FROM ${BACKEND_BASE_IMAGE}
 
 ARG PIP_INDEX_URL=https://mirrors.cloud.tencent.com/pypi/simple
 ARG PIP_DEFAULT_TIMEOUT=120

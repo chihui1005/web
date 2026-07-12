@@ -1,4 +1,5 @@
-FROM node:20-alpine AS build
+ARG FRONTEND_BUILD_IMAGE=node:20-alpine
+FROM ${FRONTEND_BUILD_IMAGE} AS build
 
 ARG NPM_REGISTRY=https://registry.npmmirror.com
 
@@ -14,7 +15,8 @@ RUN npm config set registry ${NPM_REGISTRY} \
 	&& npm ci \
 	&& npm run build
 
-FROM nginx:1.27-alpine
+ARG FRONTEND_RUNTIME_IMAGE=nginx:1.27-alpine
+FROM ${FRONTEND_RUNTIME_IMAGE}
 
 COPY frontend/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/frontend/dist /usr/share/nginx/html
