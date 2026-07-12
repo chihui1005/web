@@ -2,11 +2,29 @@
 
 set -euo pipefail
 
-if [[ ${EUID} -eq 0 && -n ${SUDO_USER:-} && ${SUDO_USER} != "root" && -z ${PIKACHU_SHOP_REEXEC_AS_USER:-} ]]; then
-  exec sudo -u "$SUDO_USER" -E env PIKACHU_SHOP_REEXEC_AS_USER=1 bash "$0" "$@"
+if [[ ${EUID} -eq 0 && -n ${SUDO_USER:-} && ${SUDO_USER} != "root" ]]; then
+  RUN_AS_USER=(sudo -u "$SUDO_USER" -H)
+else
+  RUN_AS_USER=()
 fi
 
-DOCKER_BIN="${DOCKER_BIN:-$(command -v docker || true)}"
+resolve_docker_bin() {
+  if [[ ${#RUN_AS_USER[@]} -gt 0 ]]; then
+    "${RUN_AS_USER[@]}" bash -lc 'command -v docker || true'
+  else
+    command -v docker || true
+  fi
+}
+
+run_in_target_user() {
+  if [[ ${#RUN_AS_USER[@]} -gt 0 ]]; then
+    "${RUN_AS_USER[@]}" "$@"
+  else
+    "$@"
+  fi
+}
+
+DOCKER_BIN="${DOCKER_BIN:-$(resolve_docker_bin)}"
 
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 PIP_INDEX_URL="${PIP_INDEX_URL:-https://mirrors.cloud.tencent.com/pypi/simple}"
@@ -19,7 +37,7 @@ if [[ -z "$DOCKER_BIN" ]]; then
   exit 1
 fi
 
-if ! "$DOCKER_BIN" compose version >/dev/null 2>&1; then
+if ! run_in_target_user "$DOCKER_BIN" compose version >/dev/null 2>&1; then
   echo "docker compose v2 is required. Install the Compose v2 plugin, then rerun this script." >&2
   exit 1
 fi
@@ -33,8 +51,8 @@ cleanup_legacy_containers() {
   )
 
   for name in "${legacy_names[@]}"; do
-    if "$DOCKER_BIN" ps -a --format '{{.Names}}' | grep -Fxq "$name"; then
-      "$DOCKER_BIN" rm -f "$name" >/dev/null
+    if run_in_target_user "$DOCKER_BIN" ps -a --format '{{.Names}}' | grep -Fxq "$name"; then
+      run_in_target_user "$DOCKER_BIN" rm -f "$name" >/dev/null
     fi
   done
 }
@@ -53,7 +71,7 @@ fi
 mkdir -p backend/wheels
 find backend/wheels -mindepth 1 ! -name '.gitkeep' -delete
 
-"${PIP_CMD[@]}" download \
+run_in_target_user "${PIP_CMD[@]}" download \
   -d backend/wheels \
   -r backend/requirements.txt \
   --only-binary=:all: \
@@ -64,5 +82,5 @@ find backend/wheels -mindepth 1 ! -name '.gitkeep' -delete
   --trusted-host "$PIP_TRUSTED_HOST"
 
 cleanup_legacy_containers
-"$DOCKER_BIN" compose down --remove-orphans >/dev/null 2>&1 || true
-"$DOCKER_BIN" compose build --no-cache && "$DOCKER_BIN" compose up -d --remove-orphans
+run_in_target_user "$DOCKER_BIN" compose down --remove-orphans >/dev/null 2>&1 || true
+run_in_target_user "$DOCKER_BIN" compose build --no-cache && run_in_target_user "$DOCKER_BIN" compose up -d --remove-orphans
