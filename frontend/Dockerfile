@@ -1,5 +1,7 @@
 FROM node:20-alpine AS build
 
+ARG NPM_REGISTRY=https://registry.npmmirror.com
+
 WORKDIR /app
 
 COPY package.json package-lock.json vite.config.js ./
@@ -8,7 +10,9 @@ COPY frontend ./frontend
 ARG VITE_API_BASE_URL=/api
 ENV VITE_API_BASE_URL=${VITE_API_BASE_URL}
 
-RUN npm ci && npm run build
+RUN npm config set registry ${NPM_REGISTRY} \
+	&& npm ci \
+	&& npm run build
 
 FROM nginx:1.27-alpine
 
